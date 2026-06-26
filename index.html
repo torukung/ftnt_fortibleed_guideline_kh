@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Fortinet — Cambodia &amp; Myanmar Field Team">
+<meta name="generator" content="Fortinet">
+<meta name="description" content="Field reference brief on the June 2026 FortiBleed credential-exposure campaign: affected functions and Fortinet products, immediate containment, technical remediation, and a forward-looking protection posture. Prepared for FortiGate customers in Cambodia & Myanmar.">
+<title>FortiBleed (June 2026) — Fortinet Customer Advisory Brief · Cambodia &amp; Myanmar</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --red:#da291c; --red-d:#b21e14; --red-t:#fdecea; --red-t2:#fbe2df;
+    --green:#3cb17e; --green-d:#2e8c63; --green-t:#eaf7f1;
+    --ink:#1a1a1a; --ink2:#464646; --slate:#646464; --slate2:#8a8a8a;
+    --line:#e4e4e7; --line2:#d4d4d8; --paper:#f7f7f8; --g2:#f0f0f0;
+    --amber:#b8860b; --amber-t:#fbf3e0;
+    --wrap:1080px; --read:760px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',Arial,Helvetica,sans-serif; color:var(--ink); background:var(--paper); margin:0; font-size:16px; line-height:1.68; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
+  h1,h2,h3,h4{font-family:'Inter',Arial,sans-serif; line-height:1.2; margin:0; color:var(--ink); letter-spacing:-.01em;}
+  p{margin:0 0 1.05em;}
+  a{color:var(--red-d); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .wrap{max-width:var(--wrap); margin:0 auto; padding:0 34px;}
+  .read{max-width:var(--read); margin-left:auto; margin-right:auto;}
+  sup a{font-size:.62em; font-weight:700; color:var(--red); padding:0 1px; text-decoration:none;}
+  .eyebrow{font-size:11px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--red); margin:0 0 16px; display:flex; align-items:center; gap:10px;}
+  .eyebrow::before{content:""; width:20px; height:2px; background:var(--red); display:inline-block;}
+
+  /* ---- top nav ---- */
+  .topbar{position:sticky; top:0; z-index:50; background:rgba(255,255,255,.9); backdrop-filter:saturate(160%) blur(9px); border-bottom:1px solid var(--line);}
+  .topbar .wrap{display:flex; align-items:center; justify-content:space-between; height:60px;}
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand .logo{font-weight:800; letter-spacing:.04em; font-size:18px; color:var(--ink); display:flex; align-items:center; gap:8px;}
+  .brand .logo .dot{width:11px;height:11px;border-radius:50%;background:var(--red);display:inline-block;box-shadow:0 0 0 3px var(--red-t);}
+  .brand .tg{font-size:10.5px; color:var(--slate2); letter-spacing:.06em; text-transform:uppercase; border-left:1px solid var(--line2); padding-left:12px;}
+  .navlinks{display:flex; gap:20px; align-items:center;}
+  .navlinks a{font-size:12.5px; font-weight:600; color:var(--slate); letter-spacing:.01em;}
+  .navlinks a:hover,.navlinks a.active{color:var(--red);}
+  .btn-print{font-family:inherit; font-size:11.5px; font-weight:700; color:#fff; background:var(--red); border:none; border-radius:6px; padding:9px 15px; cursor:pointer; letter-spacing:.03em;}
+  .btn-print:hover{background:var(--red-d);}
+  @media(max-width:1040px){.navlinks{display:none;} .brand .tg{display:none;}}
+
+  /* ---- cover ---- */
+  .cover{position:relative; overflow:hidden; background:#fff; border-bottom:1px solid var(--line);}
+  .cover::before{content:""; position:absolute; left:0; right:0; top:0; height:4px; background:var(--red);}
+  .cover .wrap{padding:64px 34px 52px;}
+  .cover .kicker{font-size:11.5px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--red); margin-bottom:22px;}
+  .cover h1{font-size:50px; font-weight:800; line-height:1.04; letter-spacing:-.025em; max-width:17ch; margin:0 0 20px; color:var(--ink);}
+  .cover h1 .q{color:var(--red);}
+  .cover .sub{font-size:19px; font-weight:400; color:var(--ink2); max-width:60ch; line-height:1.5; margin:0 0 34px;}
+  .cover .meta{display:flex; flex-wrap:wrap; gap:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; max-width:var(--wrap); background:#fff;}
+  .cover .meta .m{flex:1 1 160px; padding:15px 18px; border-right:1px solid var(--line);}
+  .cover .meta .m:last-child{border-right:none;}
+  .cover .meta .m .k{font-size:9.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--slate2); margin-bottom:5px;}
+  .cover .meta .m .v{font-size:13px; color:var(--ink); font-weight:600; line-height:1.35;}
+  .cover .meta .m .v.red{color:var(--red);}
+  .cover .emblem{position:absolute; right:-120px; top:-40px; width:360px; height:360px; border-radius:50%; background:radial-gradient(circle at 50% 50%, var(--red-t) 0, transparent 70%); opacity:.7; z-index:0; pointer-events:none;}
+  @media(max-width:760px){.cover h1{font-size:34px;} .cover .meta .m{flex:1 1 50%; border-bottom:1px solid var(--line);}}
+
+  /* status strip */
+  .badges{display:flex; flex-wrap:wrap; gap:9px; margin:0 0 30px;}
+  .chip{font-size:11px; font-weight:700; letter-spacing:.04em; padding:6px 12px; border-radius:30px; display:inline-flex; align-items:center; gap:6px;}
+  .chip .pip{width:7px;height:7px;border-radius:50%;display:inline-block;}
+  .chip.high{background:var(--red-t); color:var(--red-d);} .chip.high .pip{background:var(--red);}
+  .chip.info{background:var(--g2); color:var(--ink2);} .chip.info .pip{background:var(--slate2);}
+  .chip.good{background:var(--green-t); color:var(--green-d);} .chip.good .pip{background:var(--green);}
+
+  /* ---- disclaimer banner ---- */
+  .disc{background:var(--ink); color:#e9e9ec;}
+  .disc .wrap{padding:24px 34px;}
+  .disc .inner{max-width:var(--wrap); display:grid; grid-template-columns:44px 1fr; gap:18px; align-items:start;}
+  .disc .mk{width:44px;height:44px;border-radius:8px;background:rgba(218,41,28,.16);border:1px solid rgba(218,41,28,.5);display:flex;align-items:center;justify-content:center;color:#ff8a7e;font-weight:800;font-size:20px;}
+  .disc h4{color:#fff; font-size:13px; letter-spacing:.1em; text-transform:uppercase; margin:0 0 7px;}
+  .disc p{font-size:13px; line-height:1.6; color:#c9c9cf; margin:0;}
+  .disc p + p{margin-top:8px;}
+  .disc b{color:#fff; font-weight:600;}
+
+  /* ---- contents ---- */
+  .contents{background:#fff; border-bottom:1px solid var(--line);}
+  .contents .wrap{padding:38px 34px;}
+  .contents .ttl{font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--slate2);margin-bottom:18px;}
+  .toc{display:grid; grid-template-columns:repeat(2,1fr); gap:12px; max-width:var(--wrap);}
+  @media(max-width:720px){.toc{grid-template-columns:1fr;}}
+  .toc a{display:flex; align-items:flex-start; gap:14px; padding:16px 18px; border:1px solid var(--line); border-radius:8px; color:var(--ink); background:#fff; transition:.15s; break-inside:avoid;}
+  .toc a:hover{border-color:var(--red); box-shadow:0 6px 20px rgba(218,41,28,.07); text-decoration:none;}
+  .toc a .n{font-weight:800; color:var(--red); font-size:15px; font-variant-numeric:tabular-nums; flex:0 0 auto; width:26px;}
+  .toc a .tx .h{font-weight:700; font-size:14.5px; margin-bottom:2px;}
+  .toc a .tx .d{font-size:12px; color:var(--slate); line-height:1.4;}
+
+  /* ---- section ---- */
+  section{padding:54px 0;}
+  section + section{border-top:1px solid var(--line);}
+  .sec-head{max-width:var(--read); margin:0 auto 26px;}
+  .sec-head .snum{font-size:12px; font-weight:800; letter-spacing:.14em; color:var(--red); text-transform:uppercase;}
+  .sec-head h2{font-size:30px; font-weight:800; margin:8px 0 0; letter-spacing:-.02em; line-height:1.12;}
+  .sec-head .dek{font-size:16px; color:var(--slate); margin:12px 0 0; line-height:1.55;}
+  .read p{color:var(--ink2);}
+  .lead{font-size:17px;}
+  .lead::first-letter{float:left; font-family:'Inter',sans-serif; font-weight:800; font-size:54px; line-height:.82; padding:5px 12px 0 0; color:var(--red);}
+  .muted{color:var(--slate);}
+  h3.blk{max-width:var(--read); margin:34px auto 14px; font-size:18px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:10px;}
+  h3.blk::before{content:""; width:14px; height:14px; border-radius:3px; background:var(--red); flex:0 0 auto;}
+  h3.blk.g::before{background:var(--green);}
+
+  /* fact inset */
+  .inset{max-width:var(--read); margin:26px auto; border:1px solid var(--line); background:#fff; border-radius:9px; overflow:hidden;}
+  .inset .ih{background:var(--g2); border-bottom:1px solid var(--line); padding:13px 22px; font-size:10.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--ink2); display:flex; align-items:center; gap:9px;}
+  .inset .ih .pip{width:8px;height:8px;border-radius:50%;background:var(--red);}
+  .inset.gd .ih{background:var(--green-t); color:var(--green-d);} .inset.gd .ih .pip{background:var(--green);}
+  .inset .ib{padding:10px 22px 16px;}
+  .inset .r{display:flex; justify-content:space-between; gap:18px; padding:11px 0; border-bottom:1px solid var(--line); font-size:14px;}
+  .inset .r:last-child{border-bottom:0;}
+  .inset .r .k{color:var(--slate); flex:0 0 auto;}
+  .inset .r .v{color:var(--ink); font-weight:600; text-align:right;}
+  .inset .r .v.mono{font-family:'JetBrains Mono',monospace; font-weight:500; font-size:12.5px;}
+
+  /* checklist self-check */
+  .qlist{max-width:var(--read); margin:8px auto 0; padding:0;}
+  .qrow{display:grid; grid-template-columns:26px 1fr; gap:14px; padding:13px 0; border-bottom:1px solid var(--line); font-size:14px;}
+  .qrow:last-child{border-bottom:0;}
+  .qrow .b{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--red);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex:0 0 auto;}
+  .qrow .t b{color:var(--ink); font-weight:700;}
+  .qrow .t{color:var(--ink2);}
+
+  /* tables */
+  .tbl-wrap{max-width:var(--wrap); margin:24px auto 0; overflow-x:auto; border:1px solid var(--line); border-radius:9px;}
+  table{width:100%; border-collapse:collapse; font-size:13.2px; background:#fff;}
+  thead th{background:var(--ink); color:#fff; font-weight:600; text-align:left; padding:13px 16px; font-size:12px; letter-spacing:.02em; vertical-align:top; border-bottom:3px solid var(--red);}
+  td{padding:12px 16px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--ink2);}
+  tbody tr:last-child td{border-bottom:0;}
+  tbody tr:nth-child(even){background:var(--paper);}
+  td.rowh{font-weight:700; color:var(--ink); white-space:nowrap;}
+  td .tag{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--red-d); background:var(--red-t); padding:2px 7px; border-radius:4px; white-space:nowrap; display:inline-block;}
+  td .ok{color:var(--green-d); font-weight:700;}
+
+  /* step cards (workaround) */
+  .steps{max-width:var(--read); margin:24px auto 0;}
+  .step{display:grid; grid-template-columns:46px 1fr; gap:18px; padding:20px 0; border-top:1px solid var(--line);}
+  .step:first-child{border-top:0;}
+  .step .sn{width:38px;height:38px;border-radius:9px;background:var(--red);color:#fff;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .step h4{font-size:16px; font-weight:700; margin:2px 0 5px; color:var(--ink);}
+  .step p{font-size:14px; color:var(--ink2); margin:0;}
+  .step .meta{font-size:11.5px; color:var(--slate2); margin-top:7px; font-weight:600; letter-spacing:.02em;}
+  .step .meta b{color:var(--red-d);}
+
+  /* tiers good/better/best */
+  .tiers{max-width:var(--read); margin:20px auto 0; display:grid; gap:12px;}
+  .tier{border:1px solid var(--line); border-left:4px solid var(--line2); border-radius:8px; padding:16px 20px; background:#fff;}
+  .tier .lab{font-size:10px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; margin-bottom:5px;}
+  .tier h4{font-size:15px; font-weight:700; margin:0 0 4px;}
+  .tier p{font-size:13.5px; color:var(--ink2); margin:0;}
+  .tier.t1{border-left-color:var(--amber);} .tier.t1 .lab{color:var(--amber);}
+  .tier.t2{border-left-color:var(--red);} .tier.t2 .lab{color:var(--red);}
+  .tier.t3{border-left-color:var(--green); background:linear-gradient(180deg,#fff,var(--green-t));} .tier.t3 .lab{color:var(--green-d);}
+
+  /* code */
+  .code{max-width:var(--read); margin:16px auto; background:#1c1f24; border:1px solid #2a2e35; border-radius:9px; overflow:hidden;}
+  .code .ch{background:#15171b; border-bottom:1px solid #2a2e35; padding:9px 16px; font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#9aa3af; display:flex; align-items:center; gap:8px;}
+  .code .ch::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--red);}
+  .code pre{margin:0; padding:15px 18px; overflow-x:auto;}
+  .code code{font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.62; color:#e6e8ec; white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word;}
+  .code code .cm{color:#7f8893;}
+  .code code .kw{color:#ff9d92;}
+  .code code .st{color:#9ad9b0;}
+
+  /* callout */
+  .call{max-width:var(--read); margin:22px auto; border:1px solid var(--line); border-radius:9px; padding:18px 22px; background:#fff; display:grid; grid-template-columns:34px 1fr; gap:14px; align-items:start;}
+  .call .i{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex:0 0 auto;}
+  .call h4{font-size:13.5px; margin:0 0 4px; letter-spacing:.02em;}
+  .call p{font-size:13.5px; color:var(--ink2); margin:0;}
+  .call.warn{background:var(--red-t); border-color:var(--red-t2);} .call.warn .i{background:var(--red); color:#fff;} .call.warn h4{color:var(--red-d);}
+  .call.note{background:var(--paper);} .call.note .i{background:var(--ink); color:#fff;} .call.note h4{color:var(--ink);}
+  .call.tip{background:var(--green-t); border-color:#cdeadd;} .call.tip .i{background:var(--green); color:#fff;} .call.tip h4{color:var(--green-d);}
+
+  /* SE talk track */
+  .talk{max-width:var(--read); margin:22px auto 0; border:1px dashed var(--red-t2); background:var(--red-t); border-radius:9px; padding:20px 24px;}
+  .talk .lab{font-size:10px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--red-d); margin-bottom:10px;}
+  .talk p{font-size:14px; color:var(--ink); margin:0 0 .7em; line-height:1.6;}
+  .talk p:last-child{margin:0;}
+  .talk .quote{font-weight:600; font-style:italic; color:var(--ink);}
+
+  /* roadmap */
+  .road{max-width:var(--read); margin:24px auto 0;}
+  .rstage{display:grid; grid-template-columns:96px 1fr; gap:18px; padding:0 0 20px; position:relative;}
+  .rstage::before{content:""; position:absolute; left:11px; top:6px; bottom:-6px; width:2px; background:var(--line2);}
+  .rstage:last-child::before{display:none;}
+  .rstage .dot{position:absolute; left:5px; top:4px; width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--red);}
+  .rstage.g .dot{border-color:var(--green);}
+  .rstage .when{font-size:11.5px; font-weight:800; letter-spacing:.04em; color:var(--red-d); padding-left:30px; text-transform:uppercase;}
+  .rstage.g .when{color:var(--green-d);}
+  .rstage .what{font-size:13.8px; color:var(--ink2);}
+  .rstage .what b{color:var(--ink);}
+
+  /* references */
+  .refs{max-width:var(--read); margin:6px auto 0; counter-reset:r;}
+  .ref{display:grid; grid-template-columns:26px 1fr; gap:12px; padding:13px 0; border-top:1px solid var(--line); font-size:13px;}
+  .ref:first-child{border-top:0;}
+  .ref .n{font-weight:800; color:var(--red); font-variant-numeric:tabular-nums;}
+  .ref .src{color:var(--ink); font-weight:600;}
+  .ref .meta{color:var(--slate); font-size:12px;}
+  .ref a{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--slate); word-break:break-all;}
+
+  /* footer */
+  footer{background:var(--ink); color:#c9c9cf; padding:40px 0 30px;}
+  footer .wrap{max-width:var(--wrap);}
+  footer .ft-top{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:24px; border-bottom:1px solid #33363d; padding-bottom:24px; margin-bottom:20px;}
+  footer .logo{font-weight:800; font-size:19px; color:#fff; letter-spacing:.04em; display:flex; align-items:center; gap:8px;}
+  footer .logo .dot{width:11px;height:11px;border-radius:50%;background:var(--red);}
+  footer .pos{font-size:12.5px; color:#9aa3af; margin-top:8px; letter-spacing:.02em;}
+  footer .col{font-size:12px; line-height:1.7;}
+  footer .col b{color:#fff; display:block; margin-bottom:5px; font-size:11px; letter-spacing:.1em; text-transform:uppercase;}
+  footer .fine{font-size:11px; color:#7f8893; line-height:1.6; max-width:var(--wrap);}
+  footer .fine b{color:#b9bcc4;}
+
+  /* print / PDF fit */
+  @page{ size:A4; margin:15mm 14mm 16mm; }
+  @media print{
+    :root{--wrap:100%; --read:100%;}
+    body{font-size:10.6pt; line-height:1.5; background:#fff; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    .topbar{display:none !important;}
+    .btn-print{display:none !important;}
+    .cover .emblem{display:none;}
+    .wrap{padding:0; max-width:100%;}
+    .cover .wrap{padding:0 0 14pt;}
+    .disc .wrap, .contents .wrap{padding:14pt 0;}
+    section{padding:0; }
+    .section{break-before:page; padding-top:6pt;}
+    .section:first-of-type{break-before:auto;}
+    .cover h1{font-size:27pt;}
+    .cover .sub{font-size:12pt;}
+    .sec-head h2{font-size:18pt;}
+    .toc{grid-template-columns:repeat(2,1fr);}
+    .inset,.step,.tier,.code,.call,.talk,.qrow,.tbl-wrap,.toc a,.rstage,.ref,.steps .step,.tiers .tier{break-inside:avoid;}
+    thead{display:table-header-group;}
+    tr{break-inside:avoid;}
+    .code{background:#1c1f24 !important;}
+    .code code{font-size:9pt; white-space:pre-wrap; overflow-wrap:anywhere;}
+    .disc{background:var(--ink) !important;}
+    footer{background:var(--ink) !important; break-inside:avoid;}
+    a{text-decoration:none;}
+    h2,h3,h4{break-after:avoid;}
+    /* Keep each topic intact: a heading stays with the block(s) under it, and
+       multi-part units (the roadmap, a step's CLI + its callout) don't split
+       mid-topic. A topic that can't fit the remaining space moves whole to the
+       next page — a shorter page is acceptable for a vector PDF.
+       Gluing is kept surgical (heading→intro, CLI→callout, CLI→CLI) so a tall
+       table never chains into the box that follows it. */
+    .road{break-inside:avoid;}
+    h3.blk + .read{break-after:avoid;}
+    .code + .code, .code + .call{break-before:avoid;}
+    p{orphans:3; widows:3;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ TOP NAV ============ -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <span class="logo"><span class="dot"></span>FORTINET</span>
+      <span class="tg">Cambodia &amp; Myanmar · Field Advisory</span>
+    </div>
+    <nav class="navlinks">
+      <a href="#s1">01 Situation</a>
+      <a href="#s2">02 Containment</a>
+      <a href="#s3">03 Remediation</a>
+      <a href="#s4">04 Stay Protected</a>
+      <a href="#refs">References</a>
+      <button class="btn-print" onclick="window.print()">Download PDF</button>
+    </nav>
+  </div>
+</div>
+
+<!-- ============ COVER ============ -->
+<header class="cover">
+  <div class="emblem"></div>
+  <div class="wrap">
+    <div class="kicker">Security Advisory · Customer Briefing · June 2026</div>
+    <h1>“<span class="q">FortiBleed</span>” — making sense of the Fortinet credential-exposure campaign</h1>
+    <p class="sub">A plain-language field reference for FortiGate customers: what it affects, how to contain it today, the exact technical fixes, and how to stay protected against the next incident. With a banking-sector lens for Cambodia &amp; Myanmar.</p>
+    <div class="badges">
+      <span class="chip high"><span class="pip"></span>Priority: HIGH — act now</span>
+      <span class="chip info"><span class="pip"></span>Type: Credential exposure — no software patch</span>
+      <span class="chip good"><span class="pip"></span>Mitigations available today</span>
+    </div>
+    <div class="meta">
+      <div class="m"><div class="k">What it is</div><div class="v">Credential-harvesting campaign vs. internet-facing FortiGate / SSL-VPN</div></div>
+      <div class="m"><div class="k">Fortinet position</div><div class="v red">Not a new Fortinet vulnerability</div></div>
+      <div class="m"><div class="k">Affected</div><div class="v">FortiGate · FortiOS SSL-VPN (legacy password hashing)</div></div>
+      <div class="m"><div class="k">The fix</div><div class="v">Access hygiene: rotate creds · MFA · lock down management</div></div>
+      <div class="m"><div class="k">Prepared for</div><div class="v">CBM customers (banking focus)</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ DISCLAIMER ============ -->
+<div class="disc">
+  <div class="wrap">
+    <div class="inner">
+      <div class="mk">!</div>
+      <div>
+        <h4>How to use this brief</h4>
+        <p>This summary was prepared by the <b>Fortinet Cambodia &amp; Myanmar field team</b> to help customers understand and act on the FortiBleed reports quickly. It consolidates Fortinet's official PSIRT guidance, the CISA hardening alert, and reputable third-party research (Arctic Wolf, Bitdefender).</p>
+        <p>It is a <b>field reference, not an official Fortinet PSIRT advisory and not a contractual commitment.</b> For authoritative and binding guidance always refer to the official Fortinet PSIRT advisory<sup><a href="#refs">1</a></sup> and engage your Fortinet account team or FortiCare. Scale figures are third-party estimates that continue to change; confirm your own exposure with your security team before drawing conclusions.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CONTENTS ============ -->
+<div class="contents">
+  <div class="wrap">
+    <div class="ttl">Contents</div>
+    <div class="toc">
+      <a href="#s1"><span class="n">01</span><span class="tx"><span class="h">Situation &amp; impact</span><span class="d">What FortiBleed is, the affected functions, and the Fortinet products in scope.</span></span></a>
+      <a href="#s2"><span class="n">02</span><span class="tx"><span class="h">Immediate containment &amp; workaround</span><span class="d">The first-24-hours checklist from Fortinet, CISA and consultancy sources.</span></span></a>
+      <a href="#s3"><span class="n">03</span><span class="tx"><span class="h">Technical remediation</span><span class="d">Firmware targets, configuration and CLI steps, detection — in SE language.</span></span></a>
+      <a href="#s4"><span class="n">04</span><span class="tx"><span class="h">Staying protected &amp; responding faster</span><span class="d">Forward posture, monitoring, and a 30-day hardening roadmap.</span></span></a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECTION 1 ============ -->
+<section class="section" id="s1">
+  <div class="wrap">
+    <div class="sec-head read">
+      <div class="snum">Section 01</div>
+      <h2>Situation &amp; impact: what's affected, and what isn't</h2>
+      <p class="dek">In mid-June 2026, security researchers disclosed a large-scale credential-exposure campaign nicknamed “FortiBleed.” Understanding it correctly is the first step to a calm, effective response.</p>
+    </div>
+
+    <div class="read">
+      <p class="lead">Despite the “-bleed” nickname, this is <b>not</b> a Heartbleed-style memory bug and <b>not</b> a new software flaw in FortiOS. Independent researchers reported that attackers harvested configuration backup files from FortiGate devices whose management or SSL-VPN interface was reachable from the public internet, then cracked the password hashes stored inside those files offline — producing working administrator and VPN credentials.<sup><a href="#refs">6</a></sup><sup><a href="#refs">7</a></sup></p>
+
+      <p>Fortinet's official PSIRT analysis is direct: the activity “<b>is not a new Fortinet vulnerability</b>” and is not related to any recent advisory. Fortinet attributes it to threat actors <b>reusing credentials from prior incidents</b> (referencing advisories FG-IR-26-060 and FG-IR-25-647) combined with <b>brute-force against devices with weak password hygiene and no multi-factor authentication (MFA)</b>.<sup><a href="#refs">1</a></sup> In other words, the exposed asset is <em>access</em> — not a patchable code defect.</p>
+
+      <p>That distinction matters for how you respond. There is no fix to “wait for.” A device that is fully up to date but still uses old, crackable password hashing — and is reachable from the internet without MFA — remains exposed until its credentials are rotated and its access is locked down. Equally, a device whose management and VPN are already restricted to trusted networks with MFA enforced is largely <em>outside</em> the initial harvest scope.<sup><a href="#refs">7</a></sup></p>
+    </div>
+
+    <h3 class="blk">Affected functions &amp; Fortinet products</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th style="width:30%">Affected function</th><th style="width:24%">Fortinet product</th><th>What is exposed / why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="rowh">Administrator authentication</td><td>FortiGate / FortiOS</td><td>Admin passwords are stored as hashes inside the device configuration. Legacy <span class="tag">salted SHA-256</span> hashes can be cracked offline at scale.</td></tr>
+          <tr><td class="rowh">SSL-VPN remote access</td><td>FortiOS SSL-VPN</td><td>Local VPN user credentials / authentication hashes can be recovered the same way, granting remote network access that “looks legitimate.”</td></tr>
+          <tr><td class="rowh">Configuration backup / restore</td><td>FortiGate / FortiOS</td><td>The config file is the carrier — it contains the hashes. Treat every configuration backup as a secret.</td></tr>
+          <tr><td class="rowh">Password storage (hashing)</td><td>FortiOS</td><td>Root cause. <span class="tag">PBKDF2</span> hashing was introduced in 7.2.11 / 7.4.8 / 7.6.1; older builds and un-migrated accounts remain on SHA-256.</td></tr>
+          <tr><td class="rowh">Identity integration → lateral movement</td><td>FortiGate + customer AD / LDAP</td><td>If AD/LDAP is integrated, a recovered credential can be a stepping stone into the internal network and domain.</td></tr>
+          <tr><td class="rowh">Cloud SSO (seeding, prior CVEs)</td><td>FortiCloud SSO</td><td>Earlier, since-patched CVEs helped seed the credential set attackers are now reusing — context, not the current mechanism.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="inset gd">
+      <div class="ih"><span class="pip"></span>Reassuring &amp; accurate — what is NOT affected</div>
+      <div class="ib">
+        <div class="r"><span class="k">FortiGate inspection engine (IPS, AV, web filter, firewall policy)</span><span class="v"><span class="ok">No flaw involved</span></span></div>
+        <div class="r"><span class="k">Devices with management &amp; SSL-VPN restricted to trusted networks</span><span class="v"><span class="ok">Largely out of scope</span></span></div>
+        <div class="r"><span class="k">Accounts protected by enforced MFA</span><span class="v"><span class="ok">Meaningfully protected</span></span></div>
+        <div class="r"><span class="k">Accounts already migrated to PBKDF2 hashing</span><span class="v"><span class="ok">Not offline-crackable in practice</span></span></div>
+      </div>
+    </div>
+
+    <h3 class="blk">Quick self-check: “Am I exposed?”</h3>
+    <div class="read"><p class="muted" style="margin-bottom:6px;">If you answer “yes” to all three, treat administrator and VPN credentials on that device as <b>potentially exposed</b> and proceed to Section 02.</p></div>
+    <div class="qlist">
+      <div class="qrow"><span class="b">1</span><span class="t"><b>Internet-facing?</b> Is the FortiGate's admin interface (HTTPS/SSH) or SSL-VPN portal reachable directly from the public internet?</span></div>
+      <div class="qrow"><span class="b">2</span><span class="t"><b>Legacy hashing?</b> Were the admin / local VPN passwords last set on a build older than 7.2.11 / 7.4.8 / 7.6.1, or before each admin logged in after upgrading?</span></div>
+      <div class="qrow"><span class="b">3</span><span class="t"><b>No second factor?</b> Are any administrator or VPN accounts <em>without</em> MFA?</span></div>
+    </div>
+
+    <div class="call note">
+      <div class="i">i</div>
+      <div><h4>On the numbers</h4><p>Third-party estimates of impacted devices range widely — roughly 30,000 to ~86,000 internet-facing devices across 194 countries, with some researchers suggesting about half of the internet-exposed FortiGate fleet.<sup><a href="#refs">6</a></sup><sup><a href="#refs">7</a></sup> Treat these as directional, not a measure of your own risk. Your exposure depends entirely on the three checks above.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 2 ============ -->
+<section class="section" id="s2">
+  <div class="wrap">
+    <div class="sec-head read">
+      <div class="snum">Section 02</div>
+      <h2>Immediate containment &amp; workaround</h2>
+      <p class="dek">There is no patch to wait for — containment is about access hygiene, and you can act today. The six steps below follow Fortinet's official guidance,<sup><a href="#refs">1</a></sup> reinforced by CISA<sup><a href="#refs">5</a></sup> and consultancy sources.<sup><a href="#refs">6</a></sup><sup><a href="#refs">7</a></sup></p>
+    </div>
+
+    <div class="steps">
+      <div class="step"><div class="sn">1</div><div><h4>Terminate sessions &amp; reset all credentials</h4><p>End all active administrative and SSL-VPN sessions. Reset every Fortinet administrator, local user and VPN password — prioritising internet-facing systems — and enforce a strong password policy.</p><div class="meta">Source · <b>Fortinet PSIRT</b>, CISA</div></div></div>
+      <div class="step"><div class="sn">2</div><div><h4>Enforce MFA everywhere</h4><p>Turn on multi-factor authentication for <em>all</em> administrator and VPN accounts. This is the single most durable control: a reused password has no second factor to defeat. Phishing-resistant factors are preferred where available.</p><div class="meta">Source · <b>Fortinet PSIRT</b>, CISA, Arctic Wolf, Bitdefender</div></div></div>
+      <div class="step"><div class="sn">3</div><div><h4>Reduce attack surface — lock down management</h4><p>Take management and SSL-VPN off the open internet. This is the highest-impact mitigation and takes effect immediately, before any upgrade. See the good / better / best tiers below.</p><div class="meta">Source · <b>Fortinet PSIRT</b>, Bitdefender</div></div></div>
+      <div class="step"><div class="sn">4</div><div><h4>Validate the configuration</h4><p>Review firewall, VPN users and settings for unauthorised changes — ideally against a known-good backup. Watch for unfamiliar accounts named like <code>forticloud</code>, <code>fortiuser</code>, <code>fortinet-support</code>, <code>fortinet-tech-support</code>.</p><div class="meta">Source · <b>Fortinet PSIRT</b></div></div></div>
+      <div class="step"><div class="sn">5</div><div><h4>Check your logs</h4><p>Look for administrator logins from unknown IPs/geographies, configuration-export events to external addresses, unexpected SSL-VPN logins, and domain-controller logs that suggest lateral movement.</p><div class="meta">Source · <b>Fortinet PSIRT</b>, Bitdefender</div></div></div>
+      <div class="step"><div class="sn">6</div><div><h4>If you find an indicator — treat as compromised</h4><p>Follow Fortinet's device-recovery guidance, treat any integrated AD/LDAP account as compromised, monitor for lateral movement, and engage <b>FortiGuard Incident Response</b> for a scoping call.</p><div class="meta">Source · <b>Fortinet PSIRT</b></div></div></div>
+    </div>
+
+    <h3 class="blk g">The workaround that matters most: get management off the internet</h3>
+    <div class="read"><p>Fortinet frames management lock-down as good / better / best. Any tier is a valid emergency workaround; aim to reach “best.”<sup><a href="#refs">1</a></sup></p></div>
+    <div class="tiers">
+      <div class="tier t1"><div class="lab">Good</div><h4>Restrict by trusted hosts</h4><p>Limit each admin account to known management source IPs (<code>trusthost</code>), so the login surface only answers your networks.</p></div>
+      <div class="tier t2"><div class="lab">Better</div><h4>Local-in policy</h4><p>Apply a local-in policy that permits management/VPN only from defined trusted sources and drops everything else at the device itself.</p></div>
+      <div class="tier t3"><div class="lab">Best</div><h4>Remove internet administration entirely</h4><p>No administrative or SSL-VPN exposure on the WAN at all — manage out-of-band or via FortiManager, and move remote access to ZTNA.</p></div>
+    </div>
+
+    <div class="call warn">
+      <div class="i">!</div>
+      <div><h4>Don't stop at “patched”</h4><p>Patching related CVEs is good hygiene but does <b>not</b> close this exposure. Valid credentials survive firmware upgrades — the credential window only closes when each credential is rotated and MFA is in place.<sup><a href="#refs">7</a></sup></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 3 ============ -->
+<section class="section" id="s3">
+  <div class="wrap">
+    <div class="sec-head read">
+      <div class="snum">Section 03</div>
+      <h2>Technical remediation — firmware, configuration &amp; CLI</h2>
+      <p class="dek">For the customer's network / security team. Precise steps to migrate hashing, rotate credentials, enforce MFA and shrink the attack surface. Validate exact syntax against your running FortiOS version before applying in production.</p>
+    </div>
+
+    <h3 class="blk">Root cause in one paragraph</h3>
+    <div class="read">
+      <p>FortiGate stores administrator and local-user passwords as hashes inside the configuration. Older builds used <b>salted SHA-256</b> — fast, and therefore crackable offline with commodity GPU hardware. PBKDF2 (deliberately slow, offline-cracking-resistant) was introduced in <b>FortiOS 7.2.11, 7.4.8 and 7.6.1</b>. Two subtleties make the migration incomplete by default: (1) after an upgrade, an existing admin's password stays SHA-256 until <em>that admin logs in again</em>; and (2) the original SHA-256 hash is retained in a hidden <code>old-password</code> field for backward compatibility until it is explicitly purged.<sup><a href="#refs">6</a></sup><sup><a href="#refs">7</a></sup></p>
+    </div>
+
+    <h3 class="blk">Step 1 · Firmware targets</h3>
+    <div class="read"><p>Upgrade to a build that supports PBKDF2 — Fortinet recommends the latest <b>7.4, 7.6 or 8.0</b> (minimum 7.2.11 / 7.4.8 / 7.6.1). Devices below these builds store all passwords as SHA-256 with no migration path until upgraded. Plan the path with the Fortinet Upgrade Path tool.<sup><a href="#refs">8</a></sup></p></div>
+    <div class="inset">
+      <div class="ih"><span class="pip"></span>Minimum builds for PBKDF2 support</div>
+      <div class="ib">
+        <div class="r"><span class="k">7.2 branch</span><span class="v mono">≥ 7.2.11</span></div>
+        <div class="r"><span class="k">7.4 branch</span><span class="v mono">≥ 7.4.8</span></div>
+        <div class="r"><span class="k">7.6 branch</span><span class="v mono">≥ 7.6.1</span></div>
+        <div class="r"><span class="k">Fortinet recommendation</span><span class="v">Latest 7.4 / 7.6 / 8.0</span></div>
+      </div>
+    </div>
+
+    <h3 class="blk">Step 2 · Migrate hashing to PBKDF2 &amp; purge legacy hashes</h3>
+    <div class="read"><p>After upgrading, require <b>every administrator to log in at least once</b> — this converts their hash to PBKDF2. Then purge the retained SHA-256 material. On 7.2.x / 7.4.x, enable the documented setting:<sup><a href="#refs">4</a></sup><sup><a href="#refs">6</a></sup></p></div>
+    <div class="code"><div class="ch">FortiOS CLI · enforce PBKDF2 / purge old-password</div><pre><code><span class="cm"># after every admin has logged in once post-upgrade:</span>
+config system password-policy
+    set <span class="kw">login-lockout-upon-weaker-encryption</span> <span class="st">enable</span>
+end</code></pre></div>
+    <div class="call note"><div class="i">i</div><div><h4>Why both steps are needed</h4><p>The upgrade alone does not replace existing hashes; the per-admin login does the conversion, and the setting above removes the leftover SHA-256 in <code>old-password</code>. Do them in that order.</p></div></div>
+
+    <h3 class="blk">Step 3 · Rotate credentials &amp; enforce a strong policy</h3>
+    <div class="code"><div class="ch">FortiOS CLI · reset an admin password (run as super_admin)</div><pre><code>config system admin
+    edit <span class="st">"&lt;admin-name&gt;"</span>
+        set password <span class="st">&lt;new-strong-secret&gt;</span>
+    next
+end</code></pre></div>
+    <div class="code"><div class="ch">FortiOS CLI · representative strong password policy</div><pre><code>config system password-policy
+    set status <span class="st">enable</span>
+    set min-length <span class="st">14</span>
+    set min-lower-case-letter <span class="st">1</span>
+    set min-upper-case-letter <span class="st">1</span>
+    set min-number <span class="st">1</span>
+    set min-non-alphanumeric <span class="st">1</span>
+    set expire-status <span class="st">enable</span>
+end</code></pre></div>
+
+    <h3 class="blk">Step 4 · Restrict management to trusted hosts</h3>
+    <div class="code"><div class="ch">FortiOS CLI · per-admin trusted hosts</div><pre><code>config system admin
+    edit <span class="st">"&lt;admin-name&gt;"</span>
+        set trusthost1 <span class="st">10.0.0.0 255.255.255.0</span>   <span class="cm"># your mgmt subnet</span>
+        set trusthost2 <span class="st">&lt;jump-host-ip&gt; 255.255.255.255</span>
+    next
+end</code></pre></div>
+
+    <h3 class="blk">Step 5 · Remove administrative access from the WAN</h3>
+    <div class="code"><div class="ch">FortiOS CLI · drop admin/VPN services on the internet-facing interface</div><pre><code>config system interface
+    edit <span class="st">"&lt;wan-interface&gt;"</span>
+        <span class="cm"># keep only what you truly need; remove http/https/ssh admin from WAN</span>
+        set allowaccess <span class="st">ping</span>
+    next
+end
+<span class="cm"># Better: enforce with a local-in policy permitting mgmt only from trusted sources,</span>
+<span class="cm"># and deny all other inbound to the device's management services.</span></code></pre></div>
+
+    <h3 class="blk">Step 6 · Enable MFA on admin &amp; VPN accounts</h3>
+    <div class="code"><div class="ch">FortiOS CLI · two-factor with FortiToken (example)</div><pre><code>config system admin
+    edit <span class="st">"&lt;admin-name&gt;"</span>
+        set two-factor <span class="st">fortitoken</span>
+        set fortitoken <span class="st">&lt;token-serial&gt;</span>
+        set email-to <span class="st">&lt;admin@bank.example&gt;</span>
+    next
+end</code></pre></div>
+    <div class="read"><p class="muted">At scale, use <b>FortiAuthenticator</b> for centralised MFA and <b>FortiToken</b> provisioning across the fleet; for remote workforce access, prefer <b>FortiClient + ZTNA</b> over an always-listening SSL-VPN portal.</p></div>
+
+    <h3 class="blk">Detection &amp; threat-hunting (what to look for)</h3>
+    <div class="qlist">
+      <div class="qrow"><span class="b">›</span><span class="t">Configuration-backup <b>export events to an external IP</b> — a strong signal of harvesting.</span></div>
+      <div class="qrow"><span class="b">›</span><span class="t">Administrator authentication from <b>unfamiliar IPs or geographies</b>, or at unusual times.</span></div>
+      <div class="qrow"><span class="b">›</span><span class="t"><b>New administrator accounts</b> created outside your normal change-control workflow.</span></div>
+      <div class="qrow"><span class="b">›</span><span class="t">Changes to <b>logging, authentication or interface</b> settings outside documented windows.</span></div>
+      <div class="qrow"><span class="b">›</span><span class="t"><b>Outbound tunnels</b> to unrecognised IPs, or SSL-VPN logins for known users from impossible locations.</span></div>
+    </div>
+    <div class="call note"><div class="i">i</div><div><h4>Related CVEs to patch (context, not the root cause)</h4><p>FortiCloud SSO weaknesses that helped seed earlier credential capture — CVE-2026-24858 (patched Jan 2026), CVE-2025-59718 and CVE-2025-59719 (patched Dec 2025). Patch them as good hygiene, but remember: rotation + MFA + access restriction is what closes the credential exposure.<sup><a href="#refs">7</a></sup></p></div></div>
+
+    <div class="talk">
+      <div class="lab">SE talk-track · how to frame this with the customer's technical team</div>
+      <p class="quote">“The good news is there's nothing to wait for — the fix is access hygiene, and it uses tools you already own. We can roll the configuration baseline across your whole fleet from FortiManager, push MFA centrally with FortiAuthenticator and FortiToken, and validate clean-up by hunting the FortiAnalyzer logs for config-export and off-geo admin events.”</p>
+      <p>Positioning, not promises: anchor on what the customer controls today (rotate, MFA, lock down management), then show how FortiManager (fleet roll-out), FortiAnalyzer / FortiSIEM (hunting), FortiAuthenticator (MFA at scale) and ZTNA (retire exposed SSL-VPN) make it faster and durable. Avoid committing to remediation timelines or outcomes on Fortinet's behalf — direct binding questions to the account team and FortiCare.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 4 ============ -->
+<section class="section" id="s4">
+  <div class="wrap">
+    <div class="sec-head read">
+      <div class="snum">Section 04</div>
+      <h2>Staying protected &amp; responding faster</h2>
+      <p class="dek">FortiBleed is a hygiene wake-up call. The same controls that contain it also raise the cost of the next incident and shorten your response time.</p>
+    </div>
+
+    <h3 class="blk">Four durable shifts</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:22%">Pillar</th><th style="width:40%">Make it the standard</th><th>Why it shortens the next response</th></tr></thead>
+        <tbody>
+          <tr><td class="rowh">Architecture</td><td>Management off the public internet for good — out-of-band or FortiManager-only; migrate remote access from SSL-VPN to <b>ZTNA</b>; segment the identity tier.</td><td>Removes the internet-wide scan surface that this campaign — and the next one — starts from.</td></tr>
+          <tr><td class="rowh">Identity</td><td>MFA everywhere, least-privilege admin, central authentication (FortiAuthenticator / AD with MFA), routine credential rotation, encrypted config-backup handling.</td><td>A leaked credential is no longer enough on its own; rotation bounds its useful life.</td></tr>
+          <tr><td class="rowh">Hygiene baseline</td><td>Standardise on <b>PBKDF2</b>, keep firmware on supported builds, and treat every configuration backup as a secret.</td><td>Closes the offline-cracking path before attackers can use it.</td></tr>
+          <tr><td class="rowh">Visibility</td><td>Centralise logs to <b>FortiAnalyzer / FortiSIEM</b>; alert on config-export, off-geo admin logins and new admin accounts; know what is internet-exposed.</td><td>Turns “did something happen?” into a same-day answer instead of a forensic project.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="blk g">A 30-day hardening roadmap</h3>
+    <div class="road">
+      <div class="rstage"><div class="dot"></div><div class="when">Now · 0–24h</div><div class="what"><b>Contain.</b> Terminate sessions, rotate admin/VPN credentials, enable MFA, restrict management to trusted hosts. (Section 02.)</div></div>
+      <div class="rstage"><div class="dot"></div><div class="when">72 hours</div><div class="what"><b>Verify &amp; migrate.</b> Confirm every admin has logged in to convert to PBKDF2, purge legacy hashes, audit config against a known-good baseline, and review logs for indicators.</div></div>
+      <div class="rstage"><div class="dot"></div><div class="when">30 days</div><div class="what"><b>Re-architect.</b> Remove internet administration entirely, stand up centralised MFA, and begin the SSL-VPN → ZTNA migration. Roll the baseline fleet-wide via FortiManager.</div></div>
+      <div class="rstage g"><div class="dot"></div><div class="when">Ongoing</div><div class="what"><b>Monitor &amp; rehearse.</b> Subscribe to FortiGuard outbreak alerts and Fortinet PSIRT, keep an incident runbook with a FortiGuard IR contact, and re-check your external attack surface on a schedule.</div></div>
+    </div>
+
+    <h3 class="blk">A note for banking customers</h3>
+    <div class="read">
+      <p>Banks are high-value targets precisely because a recovered edge credential can become a path toward identity systems and, ultimately, core banking. The controls in this brief — strong authentication / MFA, privileged-access control, comprehensive logging and retention, and timely incident handling — map cleanly to the supervisory expectations regulated institutions already work to in Cambodia (NBC) and Myanmar (CBM).</p>
+      <p class="muted">This brief does not interpret specific regulatory obligations. Coordinate exact control mappings, evidence and any notification requirements with your compliance function and your respective regulator.</p>
+    </div>
+
+    <div class="call tip">
+      <div class="i">✓</div>
+      <div><h4>The confidence message</h4><p>This is a well-understood hygiene problem with a clear, achievable fix — not an un-patchable crisis. Customers who restrict management exposure and enforce MFA face meaningfully lower risk today, using capabilities they already own. Fortinet is proactively contacting impacted customers and FortiGuard Incident Response is available for scoping where needed.<sup><a href="#refs">1</a></sup></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REFERENCES ============ -->
+<section class="section" id="refs">
+  <div class="wrap">
+    <div class="sec-head read">
+      <div class="snum">Sources</div>
+      <h2>References</h2>
+      <p class="dek">Official Fortinet, government and reputable third-party sources used in this brief. Always defer to the official Fortinet PSIRT advisory for authoritative guidance.</p>
+    </div>
+    <div class="refs">
+      <div class="ref"><span class="n">1</span><span><span class="src">Fortinet PSIRT Blog — “Analysis of Reported Credential Compromise of FortiGate Devices” (What you need to know about FortiBleed)</span><span class="meta">Carl Windsor, Fortinet · June 19, 2026</span><br><a href="https://www.fortinet.com/blog/psirt-blogs/analysis-of-reported-credential-compromise-of-fortigate-devices">fortinet.com/blog/psirt-blogs/analysis-of-reported-credential-compromise-of-fortigate-devices</a></span></div>
+      <div class="ref"><span class="n">2</span><span><span class="src">Fortinet PSIRT Advisory — FG-IR-26-060</span><span class="meta">Referenced by Fortinet as related prior-incident credential reuse</span><br><a href="https://www.fortiguard.com/psirt/FG-IR-26-060">fortiguard.com/psirt/FG-IR-26-060</a></span></div>
+      <div class="ref"><span class="n">3</span><span><span class="src">Fortinet PSIRT Advisory — FG-IR-25-647</span><span class="meta">Referenced by Fortinet as related prior-incident credential reuse</span><br><a href="https://www.fortiguard.com/psirt/FG-IR-25-647">fortiguard.com/psirt/FG-IR-25-647</a></span></div>
+      <div class="ref"><span class="n">4</span><span><span class="src">Fortinet Community — Enforcing PBKDF2 as hash function for administrator accounts (FortiOS 7.2.11+)</span><span class="meta">Fortinet technical tip / KB 220652</span><br><a href="https://community.fortinet.com/">community.fortinet.com · technical-tip-enforcing-pbkdf2 (220652)</a></span></div>
+      <div class="ref"><span class="n">5</span><span><span class="src">CISA Alert — “CISA Urges Hardening Fortinet Devices After Reports of Credential Exposure”</span><span class="meta">Cybersecurity &amp; Infrastructure Security Agency · June 18, 2026</span><br><a href="https://www.cisa.gov/news-events/alerts/2026/06/18/cisa-urges-hardening-fortinet-devices-after-reports-credential-exposure">cisa.gov/news-events/alerts/2026/06/18/...credential-exposure</a></span></div>
+      <div class="ref"><span class="n">6</span><span><span class="src">Arctic Wolf Labs — “Active FortiBleed Campaign Impacting Fortinet Devices Across 194 Countries”</span><span class="meta">Security Bulletin · June 17, 2026</span><br><a href="https://arcticwolf.com/resources/blog/active-fortibleed-campaign-impacting-fortinet-devices-across-194-countries/">arcticwolf.com/resources/blog/active-fortibleed-campaign...</a></span></div>
+      <div class="ref"><span class="n">7</span><span><span class="src">Bitdefender — “Technical Advisory: FortiBleed Credential Exposure Campaign Targeting Internet-Facing Fortinet Devices”</span><span class="meta">Sean Nikkel, Bitdefender Business Insights · June 22, 2026</span><br><a href="https://businessinsights.bitdefender.com/technical-advisory-fortibleed-credential-exposure-campaign-targeting-internet-facing-fortinet-devices">businessinsights.bitdefender.com/technical-advisory-fortibleed...</a></span></div>
+      <div class="ref"><span class="n">8</span><span><span class="src">Fortinet — FortiGate Best Practices / Hardening Guide &amp; Upgrade Path Tool</span><span class="meta">docs.fortinet.com</span><br><a href="https://docs.fortinet.com/document/fortigate/7.6.0/best-practices/555436/hardening">docs.fortinet.com/document/fortigate/7.6.0/best-practices/hardening</a> · <a href="https://docs.fortinet.com/upgrade-tool">docs.fortinet.com/upgrade-tool</a></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="ft-top">
+      <div>
+        <div class="logo"><span class="dot"></span>FORTINET</div>
+        <div class="pos">Fortify Your Cybersecurity.™</div>
+      </div>
+      <div class="col"><b>Escalation path</b>Your Fortinet account team<br>FortiCare Support<br>FortiGuard Incident Response (scoping)</div>
+      <div class="col"><b>Authoritative source</b>Fortinet PSIRT advisories<br>fortiguard.com/psirt<br>fortinet.com/blog/psirt-blogs</div>
+      <div class="col"><b>Prepared by</b>Fortinet Cambodia &amp; Myanmar<br>Field Advisory · June 2026</div>
+    </div>
+    <p class="fine"><b>Important.</b> This document is an internal field reference prepared by the Fortinet Cambodia &amp; Myanmar team to help customers understand publicly reported FortiBleed activity and act quickly. It summarises Fortinet's official PSIRT guidance and reputable third-party research; it is <b>not</b> an official Fortinet PSIRT advisory, a security assessment of any specific environment, or a contractual commitment. Technical commands are representative and must be validated against your running FortiOS version before use in production. For authoritative and binding guidance, refer to the official Fortinet PSIRT advisory and engage your Fortinet account team or FortiCare. © 2026 Fortinet, Inc. All product names are trademarks of their respective owners.</p>
+  </div>
+</footer>
+
+<script>
+  // active-section highlight in the top nav
+  (function(){
+    var links = Array.prototype.slice.call(document.querySelectorAll('.navlinks a[href^="#"]'));
+    var map = links.map(function(a){ return {a:a, el:document.querySelector(a.getAttribute('href'))}; }).filter(function(x){return x.el;});
+    function onScroll(){
+      var y = window.scrollY + 120, cur = null;
+      map.forEach(function(x){ if(x.el.offsetTop <= y) cur = x; });
+      links.forEach(function(a){ a.classList.remove('active'); });
+      if(cur) cur.a.classList.add('active');
+    }
+    window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+  })();
+</script>
+</body>
+</html>
